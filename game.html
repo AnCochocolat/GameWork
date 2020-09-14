@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>JankenGame</title>
+    <style>
+        body{
+            background-size: cover;
+            background-repeat: no-repeat;
+            text-align: center;
+            padding-top:50px; 
+        }
+        #btn-next{
+            width: 120px;
+            height: 40px;
+        }
+        #title{
+            font-size: 48pt;
+            color: blue;
+            background-color: rgba(255, 255, 255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title"> JankenGame</h1>
+    <p id="hand">hand</p>
+        <button id="janken-go">GO!</button>
+        <button id="gu-go">GU-GO!</button>
+        <button id="choki-go">CHOKI-GO!</button>
+        <button id="pa-go!">PA-GO!</button>    
+</body>
+<script>
+let janken_number;
+let janken_array = ["gu","choki","pa"];
+document.querySelector("#janken-go").addEventListener("click",(e)=>{
+janken_number = getRandom(0,2);
+janken_hand = janken_array[janken_number];
+document.querySelector("#hand").innerHTML = janken_hand;
+})
+//最大値・最小値を引数に持つ関数
+function getRandom( min, max ) {
+    var random = Math.floor( Math.random() * (max + 1 - min) ) + min;
+    return random;
+}
+</script>
+</html>
