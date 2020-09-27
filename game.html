@@ -23,24 +23,118 @@
 </head>
 <body>
     <h1 id="title"> JankenGame</h1>
+    <p>player:</p>
     <p id="hand">hand</p>
-        <button id="janken-go">GO!</button>
-        <button id="gu-go">GU-GO!</button>
-        <button id="choki-go">CHOKI-GO!</button>
-        <button id="pa-go!">PA-GO!</button>    
+    <p>enemy:</p>
+    <p id="enemy_hand">enemyhand</p>
+        <button id="gu-go">GU</button>
+        <button id="choki-go">CHOKI</button>
+        <button id="pa-go">PA</button>    
+    <p id = "result">result</p>    
+    <table border = "1" id = "result-table">
+        <thead>
+            <tr>
+                <td>player</td>
+                <td>enemy</td>
+                <td>result</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            
+            </tr>
+        </tbody>
+    </table>
 </body>
 <script>
 let janken_number;
 let janken_array = ["gu","choki","pa"];
-document.querySelector("#janken-go").addEventListener("click",(e)=>{
-janken_number = getRandom(0,2);
-janken_hand = janken_array[janken_number];
-document.querySelector("#hand").innerHTML = janken_hand;
+let enemy_janken_hand;
+let player_janken_hand;
+let janken_result;
+let result_count = 0;
+document.querySelector("#gu-go").addEventListener("click",(e)=>{
+    player_janken_hand = "gu";
+    OnButtonDown();
 })
+document.querySelector("#choki-go").addEventListener("click",(e)=>{
+    player_janken_hand = "choki";
+    OnButtonDown();
+})
+document.querySelector("#pa-go").addEventListener("click",(e)=>{
+    player_janken_hand = "pa";
+    OnButtonDown();
+})
+
+
+function GetEnemyJanken(){
+    janken_number = getRandom(0,2);
+    enemy_janken_hand = janken_array[janken_number];
+    document.querySelector("#enemy_hand").innerHTML = enemy_janken_hand;
+}
+function JankenBattle(){
+if(player_janken_hand == enemy_janken_hand){
+    janken_result = "draw";
+}
+else if(player_janken_hand == "gu" && enemy_janken_hand == "choki"
+|| player_janken_hand == "choki" && enemy_janken_hand == "pa"
+|| player_janken_hand == "pa" && enemy_janken_hand == "gu"){
+    janken_result = "win";
+}
+else{
+    janken_result = "lose";
+}
+document.querySelector("#result").innerHTML = janken_result;
+}
+function OnButtonDown(){
+    document.querySelector("#hand").innerHTML = player_janken_hand;
+    GetEnemyJanken();
+    JankenBattle();
+
+
+    let input_myhand = player_janken_hand;
+    let input_enemyhand = enemy_janken_hand;
+    let input_result = janken_result;
+    fetch("janken_data.php?myhand=" +input_myhand+
+    "&enemyhand=" + input_enemyhand + 
+    "&result=" + input_result)
+    .then((res) => {
+        return (res.json());
+    })
+    .then((json)=>{
+        let table = document.getElementById('result-table');
+    let newRow = table.insertRow();
+    let newCell = newRow.insertCell();
+    let newText = document.createTextNode(json['myhand']);
+    newCell.appendChild(newText);
+    newCell = newRow.insertCell();
+    newText = document.createTextNode(json['enemyhand']);
+    newCell.appendChild(newText);
+    newCell = newRow.insertCell();
+    newText = document.createTextNode(json['result']);
+    newCell.appendChild(newText);
+    result_count++;
+    if(result_count > 5){
+       // table.deleteRow(1);
+    }
+    }    
+    );
+}
 //最大値・最小値を引数に持つ関数
 function getRandom( min, max ) {
     var random = Math.floor( Math.random() * (max + 1 - min) ) + min;
     return random;
+}
+window.onload = function(){
+    fetch("janken_start.php")
+    .then((res) => {
+        return (res.json());
+    })
+    .then((json)=>{
+
+
+    }    
+    );
 }
 </script>
 </html>
